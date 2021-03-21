@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style type="text/css">
+	
+	/* Style the navigation bar */
+.navbar {
+  width: 100%;
+  background-color: #555;
+  overflow: auto;
+}
+
+/* Navbar links */
+.navbar a {
+  float: left;
+  text-align: center;
+  padding: 12px;
+  color: white;
+  text-decoration: none;
+  font-size: 17px; 
+  position: sticky;
+}
+
+/* Navbar links on mouse-over */
+.navbar a:hover {
+  background-color: #000;
+ }
+
+/* Current/active navbar link */
+.active {
+  background-color: #4CAF50;
+}
+.container{
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+
+}
+#subject {
+      margin: 0px;
+    height: 38px;
+    width: 205px;
+}
+/* Add responsiveness - will automatically display the navbar vertically instead of horizontally on screens less than 500 pixels */
+@media screen and (max-width: 500px) {
+  .navbar a {
+    float: none;
+    display: block;
+  }
+}
+
+#submit{
+	background-color: #4CAF50;
+    margin: 24px;
+    padding: 9px;
+}
+/*#items{
+	background-color: ;	
+}*/
+
+#add{
+	padding: 7px;
+    margin: 20px
+}
+.container button:hover {
+	    background-color: #555;
+}
+
+#h{
+	padding: 23px;
+}
+</style>
+<body>
+
+<div class="navbar">
+  <a class="active" href="#"><i class="fa fa-fw fa-home"></i> Home</a>
+  <a href="#"><i class="fa fa-fw fa-search"></i> Search</a>
+  <a href="#"><i class="fa fa-fw fa-envelope"></i> Contact</a>
+  <a href="#"><i class="fa fa-fw fa-user"></i> Login</a>
+</div>
+
+<div class="container">
+
+	<div class=" container my-4">
+   <label for="fname">First Name :	</label>
+    <input type="text" id="Name" name="firstname" placeholder="Your name..">
+</div>
+
+<div class=" container mx-3" >
+   <label for="lname">Last Name :	</label>
+    <input type="text" id="lname" name="lastname" placeholder="Your last name..">
+</div>
+
+<div class="container">
+    <label for="country">Country</label>
+    <select id="country" name="country">
+      <option value="australia">Australia</option>
+      <option value="canada">Canada</option>
+      <option value="usa">USA</option>
+      <option value="usa">IND</option>
+      <option value="usa">PAK</option>
+    </select>
+</div>
+
+<div class="container">
+	    <label for="subject" style=" vertical-align: top">Subject :	</label>
+    <textarea id="subject" name="subject" placeholder="Write something.."></textarea>
+</div>
+<div>
+  <label for="email" style="margin: 21px;"><b>Email :	</b></label>
+    <input type="text" placeholder="Enter Email" name="email" id="email" required style="margin: -16px">
+</div>
+
+<button id="add">add list</button>
+<button id="clear" onclick="clearStorage()" style="padding: 7px">clear list</button>
+
+
+	
+</div>
+
+<div id="items">
+	<h2 style="margin-left:243px">Studnets info</h2>
+	<table>
+		<thead>
+			<tr>
+			<th scope="col" id="h">SNo</th>
+			<th scope="col" id="h">Name</th>
+			<th   scope="col" id="h">Last Name</th>
+			<th  scope="col" id="h">Country</th>
+			<th  scope="col" id="h">Subject</th>
+			<th id="h">Action</th>
+            </tr>
+		</thead>
+		<tbody id="tabelBody">
+		<tr>
+		<th scope="row">1</th>
+	   <td>sid</td>
+      <td>mahtre</td>
+      <td>ind</td>
+      <td>sdsdvhgs</td>
+      <td><button class="btn btn-sm btn-primary">Delete</button></td>
+			</tr>
+		</tbody>
+
+	</table>
+	
+</div>
+
+<script>
+	
+add= document.getElementById("add");
+add.addEventListener("click",getAndUpdate);
+update();
+
+
+function getAndUpdate(){   ///step1 get the items and store in localStorage
+	console.log("clickjed");
+	Nm=document.getElementById('Name').value;
+	Lm=document.getElementById('lname').value;
+	Con=document.getElementById('country').value;
+	Sub=document.getElementById('subject').value;
+	if(localStorage.getItem('itemJson')==null){
+		itemJsonArray=[];
+		itemJsonArray.push([Nm,Lm,Con,Sub]);
+		localStorage.setItem('itemJson',JSON.stringify(itemJsonArray));
+     }
+     else{
+     	itemJsonArrayStr=localStorage.getItem('itemJson') 
+     	itemJsonArray =JSON.parse(itemJsonArrayStr); 
+     	itemJsonArray.push([Nm,Lm,Con,Sub]);
+		localStorage.setItem('itemJson',JSON.stringify(itemJsonArray));
+     }
+     	update();
+}
+
+function update(){   //step2 populate the element
+   if(localStorage.getItem('itemJson')==null){
+   	itemJsonArray=[];
+   	localStorage.setItem('itemJson',JSON.stringify(itemJsonArray)); ///
+   }
+   else{
+   		itemJsonArrayStr=localStorage.getItem('itemJson')  //get the item
+		itemJsonArray =JSON.parse(itemJsonArrayStr); 
+   }
+   tabelBody=document.getElementById("tabelBody")
+   let str= "";
+   itemJsonArray.forEach((element,index)=>{
+   str +=`
+  		<tr>
+		<th scope="row">${index+1}</th>
+	   <td>${element[0]}</td>
+      <td>${element[1]}</td>
+      <td>${element[2]}</td>
+      <td>${element[3]}</td>
+      <td><button class="btn btn-sm btn-primary" onclick="deleted(${index})">Delete</button></td>
+	  </tr>
+   
+   `
+   });
+   tabelBody.innerHTML=str;
+ }
+
+
+
+function deleted(itemIndex){   //pass index for deleting
+	console.log("Delete",itemIndex)
+	itemJsonArrayStr=localStorage.getItem('itemJson')  //get the item
+	itemJsonArray =JSON.parse(itemJsonArrayStr);        // Convert in String for deleting 
+   
+   itemJsonArray.splice(itemIndex,1) 
+   localStorage.setItem('itemJson',JSON.stringify(itemJsonArray))  // save after deleting the items in localstorage as array
+	update();// update the list after doing deletion
+}
+
+function clearStorage(){
+	if(confirm("DO YOU WANT TO CLEAR STUDENTS LIST ?")){
+		console.log("clearing")
+		localStorage.clear();
+		update();
+	}
+}
+
+</script>
+</body>
+</html>
